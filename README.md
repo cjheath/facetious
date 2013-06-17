@@ -16,7 +16,7 @@ Or install it yourself as:
 
     $ gem install facetious
 
-## Usage
+## Setup
 
 ```ruby
   require 'facetious'
@@ -41,6 +41,8 @@ Inbuilt Data Types are:
 * :integers (same, but for integers)
 * :your_custom_type may be used if you assign a converter proc to Facetious::Facet::ValueConverters[:your_custom_type]
 
+## Searching
+
 ```ruby
   MyRecord.where_clause_for_facets(:postcode => "2069, 3000-3999", :suburb_name => "Rose%", :railway_station => "-")
   => "(postcode = 2069 OR postcode >= 3000 AND postcode < 3999) AND suburb_name LIKE 'Rose%' AND NOT EXISTS(SELECT * FROM railway_stations WHERE my_records.station_id = railway_stations.id)"
@@ -49,6 +51,8 @@ Inbuilt Data Types are:
 
 where_clause_for_facets generates the appropriate SQL WHERE condition for the values in the parameters hash
 find_by_facets does MyRecord.where(where_clause_for_facets(parameters))
+
+## Search values
 
 Values for a facet may be:
 * "value" Find records having this value for the specified field
