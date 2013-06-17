@@ -1,6 +1,6 @@
 # Facetious
 
-A Faceted search extension for ActiveRecord
+A faceted search extension for ActiveRecord
 
 ## Installation
 
@@ -26,24 +26,25 @@ Or install it yourself as:
   end
 ```
 
-Options are:
+Options (may be provided in-order or in the trailing hash, or mixed) are:
 * :name (mandatory)
 * :field_name (if different from the :name, or :where is used and you need to include a table name)
 * :data_type => :string (default), :integer, :strings, :integers, :date (not yet implemented), :your_type
 * :facet_title => "A String you can use in your form generator"
 * :where => "SQL WHERE condition ?"; used to include an EXISTS clause when your facet value is in a joined table. Note that the question-mark will be substituted by the search conditions generated from the facet search values.
 
-Data Types are:
+Inbuilt Data Types are:
 * :string
 * :integer
 * :date (not yet implemented)
 * :strings (when you want to use "field IN (value_list)" instead of equality comparison
 * :integers (same, but for integers)
-* :my_custom_type may be used if you assign a converter proc to Facetious::Facet::ValueConverters[:my_custom_type]
+* :your_custom_type may be used if you assign a converter proc to Facetious::Facet::ValueConverters[:your_custom_type]
 
 ```ruby
-  MyRecord.where_clause_for_facets(:facet1 => "2069, 3000-2999", :facet2 => "Rose%").include(:some_association)
-  MyRecord.find_by_facets(:facet1 => "2069, 3000-2999", :facet2 => "Rose%").include(:some_association)
+  MyRecord.where_clause_for_facets(:postcode => "2069, 3000-3999", :suburb_name => "Rose%", :railway_station => "-")
+  => "(postcode = 2069 OR postcode >= 3000 AND postcode < 3999) AND suburb_name LIKE 'Rose%' AND NOT EXISTS(SELECT * FROM railway_stations WHERE my_records.station_id = railway_stations.id)"
+  MyRecord.find_by_facets(:postcode => "2069, 3000-3999", :suburb_name => "Rose%").include(:some_association)
 ```
 
 where_clause_for_facets generates the appropriate SQL WHERE condition for the values in the parameters hash
@@ -58,7 +59,7 @@ Values for a facet may be:
 * ">value" Find records having values greater than the one provided
 * "value1..value2" Find records having values between the ones provided (inclusive)
 * "value1, value2, ..." Find records having values matching any of the ones provided (these may include the above patterns)
-* "-value" No value (i.e. NULL or empty, or NOT EXISTS (if :where condition start with EXISTS))
+* "-" No value (i.e. NULL or empty, or NOT EXISTS (if :where condition start with EXISTS))
 
 All values are SQL escaped to prevent SQL injection.
 
