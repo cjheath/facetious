@@ -7,7 +7,7 @@ module Facetious #:nodoc:
       string:
         proc {|value| "'" + value.gsub(/'/, "''") + "'" },
       integer:
-        proc {|value| Integer(value).to_s },
+        proc {|value| Integer(value) },
       date:
         proc {|value|
           raise "REVISIT: Don't use DATE VALUE before implementing it"
@@ -15,7 +15,7 @@ module Facetious #:nodoc:
         },
       integers:
         proc {|value|
-          '(' + (value-['']).map{|i| Integer(i).to_s}.join(',') + ')'
+          '(' + (value-['']).map{|i| Integer(i)}.join(',') + ')'
         },
       strings:
         proc {|value|
@@ -26,7 +26,7 @@ module Facetious #:nodoc:
     def sql_value data_type, value
       conversion_proc = ValueConverter[data_type]
       raise "facet data type #{data_type} is not recognised" unless conversion_proc
-      conversion_proc.call(value)
+      conversion_proc.call(value).to_s
     end
 
     def condition_for value
@@ -147,7 +147,7 @@ if $0 == __FILE__
   class Foo < ActiveRecord::Base  #:nodoc:
     facet :fred
     facet :fly, :data_type => :integer
-    facet :nerk, :field_name => 'other_table.nerk', :where => "EXISTS(SELECT * FROM other_table WHERE foos.fk = other_table.id ?)"
+    facet :nerk, :data_type => :integer, :field_name => 'other_table.nerk', :where => "EXISTS(SELECT * FROM other_table WHERE foos.fk = other_table.id ?)"
   end
 
   puts Foo.where_clause_for_facets :fred => [2069, 3000..3999], :fly => 100
