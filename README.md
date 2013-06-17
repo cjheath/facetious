@@ -31,7 +31,7 @@ Options are:
 * :field_name (if different from the :name, or :where is used and you need to include a table name)
 * :data_type => :string (default), :integer, :strings, :integers, :date (not yet implemented), :your_type
 * :facet_title => "A String you can use in your form generator"
-* :where => "SQL WHERE condition"; used to include an EXISTS clause when your facet value is in a joined table
+* :where => "SQL WHERE condition ?"; used to include an EXISTS clause when your facet value is in a joined table. Note that the question-mark will be substituted by the search conditions generated from the facet search values.
 
 Data Types are:
 * :string
@@ -48,6 +48,19 @@ Data Types are:
 
 where_clause_for_facets generates the appropriate SQL WHERE condition for the values in the parameters hash
 find_by_facets does MyRecord.where(where_clause_for_facets(parameters))
+
+Values for a facet may be:
+* "value" Find records having this value for the specified field
+* "val%ue" Find records using an SQL LIKE match
+* "<value" Find records having values less than the one provided
+* "<=value" Find records having values less than or equal to the one provided
+* ">=value" Find records having values greater than or equal to the one provided
+* ">value" Find records having values greater than the one provided
+* "value1..value2" Find records having values between the ones provided (inclusive)
+* "value1, value2, ..." Find records having values matching any of the ones provided (these may include the above patterns)
+* "-value" Negate the search condition (use <> or NOT (where clause))
+
+All values are SQL escaped to prevent SQL injection.
 
 ## Contributing
 
