@@ -58,7 +58,7 @@ Values for a facet may be:
 * ">value" Find records having values greater than the one provided
 * "value1..value2" Find records having values between the ones provided (inclusive)
 * "value1, value2, ..." Find records having values matching any of the ones provided (these may include the above patterns)
-* "-value" Negate the search condition (use <> or NOT (where clause))
+* "-value" No value (i.e. NULL or empty, or NOT EXISTS (if :where condition start with EXISTS))
 
 All values are SQL escaped to prevent SQL injection.
 
