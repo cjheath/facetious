@@ -27,19 +27,27 @@ Or install it yourself as:
 ```
 
 Options are:
-* :field_name
-* :data_type
-* :facet_title
-* :where
-	=> "SQL where fragment"
+* :name (mandatory)
+* :field_name (if different from the :name, or :where is used and you need to include a table name)
+* :data_type => :string (default), :integer, :strings, :integers, :date (not yet implemented), :your_type
+* :facet_title => "A String you can use in your form generator"
+* :where => "SQL WHERE condition"; used to include an EXISTS clause when your facet value is in a joined table
 
 Data Types are:
 * :string
 * :integer
-* :date
-* :strings
-* :integers
-* :my_custom_type => {}
+* :date (not yet implemented)
+* :strings (when you want to use "field IN (value_list)" instead of equality comparison
+* :integers (same, but for integers)
+* :my_custom_type may be used if you assign a converter proc to Facetious::Facet::ValueConverters[:my_custom_type]
+
+```ruby
+  MyRecord.where_clause_for_facets(:facet1 => "2069, 3000-2999", :facet2 => "Rose%").include(:some_association)
+  MyRecord.find_by_facets(:facet1 => "2069, 3000-2999", :facet2 => "Rose%").include(:some_association)
+```
+
+where_clause_for_facets generates the appropriate SQL WHERE condition for the values in the parameters hash
+find_by_facets does MyRecord.where(where_clause_for_facets(parameters))
 
 ## Contributing
 
